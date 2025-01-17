@@ -69,14 +69,15 @@ static const xla::ifrt::MemoryKind kPinnedHostMemoryKind(
 absl::Status ValidateArrayCreationInput(
     std::shared_ptr<const Sharding> sharding,
     const PjRtArray::PjRtBuffers& pjrt_buffers) {
-  if (pjrt_buffers.empty()) {
-    return InvalidArgument("pjrt_buffers must be non-empty");
-  }
   absl::Span<Device* const> sharding_devices =
       sharding->devices()->AddressableDeviceList()->devices();
   if (sharding_devices.size() != pjrt_buffers.size()) {
     return InvalidArgument("device and buffer counts mismatch: %d vs. %d",
                            sharding_devices.size(), pjrt_buffers.size());
+  }
+
+  if (pjrt_buffers.empty()) {
+    return absl::OkStatus();
   }
 
   // Canonicalize memory kind in case it hasn't been done before.

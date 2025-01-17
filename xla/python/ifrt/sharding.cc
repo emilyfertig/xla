@@ -53,12 +53,14 @@ namespace ifrt {
 namespace {
 
 // Returns a canonicalized memory kind for the given devices.
-// REQUIRES: !devices->devices().empty()
 MemoryKind CanonicalizeMemoryKindWithDevices(
     const MemoryKind& memory_kind,
     const tsl::RCReference<DeviceList>& devices) {
   CHECK(devices != nullptr);
-  CHECK(!devices->devices().empty());
+  if (devices->devices().empty()) {
+    // TODO(emilyaf): Is this ok?
+    return memory_kind;
+  }
   return CanonicalizeMemoryKind(memory_kind, devices->devices().front());
 }
 
@@ -436,7 +438,7 @@ ConcreteSharding::ConcreteSharding(tsl::RCReference<DeviceList> devices,
       break;
     }
   }
-  if (identical) {
+  if (identical && !static_shard_shapes.empty()) {
     shard_shape_ = static_shard_shapes[0];
   }
 }

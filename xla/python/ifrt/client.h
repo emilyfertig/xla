@@ -116,7 +116,7 @@ class Client : public llvm::RTTIExtends<Client, llvm::RTTIRoot> {
 
   // Builds a larger array out of individual per-device shards.
   // TODO(hyeontaek): Replace this API with the version that takes
-  // `SingleDeviceShardSemantics`.
+  // `SingleDeviceShardSemantics` and `Dtype`.
   virtual absl::StatusOr<tsl::RCReference<Array>>
   AssembleArrayFromSingleDeviceArrays(
       Shape shape, absl::Nonnull<std::shared_ptr<const Sharding>> sharding,
@@ -128,6 +128,15 @@ class Client : public llvm::RTTIExtends<Client, llvm::RTTIRoot> {
       absl::Span<tsl::RCReference<Array>> arrays,
       ArrayCopySemantics array_copy_semantics,
       SingleDeviceShardSemantics single_device_shard_semantics) = 0;
+  virtual absl::StatusOr<tsl::RCReference<Array>>
+  AssembleArrayFromSingleDeviceArrays(
+      Shape shape, DType dtype,
+      absl::Nonnull<std::shared_ptr<const Sharding>> sharding,
+      absl::Span<tsl::RCReference<Array>> arrays,
+      ArrayCopySemantics array_copy_semantics,
+      SingleDeviceShardSemantics single_device_shard_semantics) {
+        return absl::Status(absl::StatusCode::kUnimplemented, "Need to implement MakeEmptyArray.");
+      };
 
   // Copies the arrays to a new set of devices.
   //

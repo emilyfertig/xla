@@ -182,7 +182,12 @@ class PjRtClient final
       absl::Span<tsl::RCReference<Array>> arrays,
       ArrayCopySemantics array_copy_semantics,
       SingleDeviceShardSemantics single_device_shard_semantics) override;
-
+  absl::StatusOr<tsl::RCReference<Array>> AssembleArrayFromSingleDeviceArrays(
+      Shape shape, DType dtype, std::shared_ptr<const Sharding> sharding,
+      absl::Span<tsl::RCReference<Array>> arrays,
+      ArrayCopySemantics array_copy_semantics,
+      SingleDeviceShardSemantics single_device_shard_semantics) override;
+      
   absl::StatusOr<std::vector<tsl::RCReference<Array>>> CopyArrays(
       absl::Span<tsl::RCReference<Array>> arrays,
       std::optional<tsl::RCReference<DeviceList>> devices,
